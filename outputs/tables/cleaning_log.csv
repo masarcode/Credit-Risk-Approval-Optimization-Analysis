@@ -1,0 +1,9 @@
+item,value
+raw_rows,100250.0
+exact_duplicates_removed,250.0
+dti_percent_values_rescaled,368.0
+employment_length_imputed,1464.0
+employment_length_median_used,3.5
+revolving_utilization_imputed,836.0
+revolving_utilization_median_used,0.334
+clean_rows,100000.0

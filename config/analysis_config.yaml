@@ -1,0 +1,107 @@
+# Central configuration for the Credit Risk & Approval Optimization Analysis.
+# Every assumption that affects headline results lives here so it can be
+# reviewed and changed in one place.
+
+project:
+  name: Credit Risk & Approval Optimization Analysis
+  random_seed: 20260922          # fixed seed: results reproduce exactly
+  n_applicants: 100000
+
+paths:
+  raw_data: data/raw/applications_raw.csv
+  processed_data: data/processed/applications_clean.csv
+  scored_data: data/processed/applications_scored.csv
+  database: data/processed/credit_risk.db
+  sql_dir: sql
+  tables_dir: outputs/tables
+  figures_dir: outputs/figures
+  excel_dir: outputs/excel
+  summary_dir: outputs/executive_summary
+
+# Data-quality issues deliberately injected into the raw file so the
+# cleaning step does real work. Rates are shares of the 100,000 applicants.
+raw_data_issues:
+  duplicate_rows: 250                  # exact duplicate submissions appended
+  missing_employment_length_rate: 0.015
+  missing_utilization_rate: 0.008
+  dti_recorded_as_percent_rate: 0.004  # e.g. 23.5 instead of 0.235
+
+# Logical bounds used by validation.
+bounds:
+  credit_score: [300, 850]
+  debt_to_income_ratio: [0.0, 0.60]
+  revolving_utilization: [0.0, 1.0]
+  annual_income: [12000, 500000]
+  requested_loan_amount: [1000, 50000]
+
+scoring:
+  development_share: 0.70        # 70% build sample, 30% holdout
+  candidate_features:
+    - credit_score
+    - debt_to_income_ratio
+    - revolving_utilization
+    - recent_delinquencies
+    - previous_default_flag
+    - recent_credit_inquiries
+    - loan_to_income_ratio
+    - log_annual_income
+    - employment_length_capped
+    - credit_history_length
+    - number_of_open_accounts
+  # A feature is kept only if it is statistically clear AND its direction
+  # matches credit logic (e.g. more delinquencies should mean more risk).
+  retention_p_value: 0.01
+  expected_signs:                # sign of coefficient on log-odds of DEFAULT
+    credit_score: -1
+    debt_to_income_ratio: 1
+    revolving_utilization: 1
+    recent_delinquencies: 1
+    previous_default_flag: 1
+    recent_credit_inquiries: 1
+    loan_to_income_ratio: 1
+    log_annual_income: -1
+    employment_length_capped: -1
+    credit_history_length: -1
+    number_of_open_accounts: -1
+  # Points scaling (standard scorecard convention):
+  # score = base_score at base_odds (good:bad), +pdo points doubles the odds.
+  base_score: 600
+  base_odds: 20
+  pdo: 20
+  score_name: Synthetic Risk Score (SRS)
+
+scenarios:
+  baseline_threshold: 550        # assumed current cutoff (approves roughly 4 in 5 applicants)
+  step: 5                        # points between scenarios
+  count: 12                      # baseline + 11 progressively stricter cutoffs
+
+# Simple unit economics used ONLY to translate default rates into dollars
+# and a break-even default rate. Illustrative assumptions, not market data.
+economics:
+  loss_given_default: 0.75       # share of loan principal lost when a loan defaults
+  net_margin_on_good_loans: 0.12 # lifetime net interest margin on a loan that repays
+  # Risk-appetite sensitivity: alternative margins a lender might assume
+  sensitivity_margins:
+    conservative: 0.08
+    base: 0.12
+    growth: 0.16
+
+segments:
+  credit_score_band:
+    edges: [300, 580, 620, 660, 700, 740, 851]
+    labels: ["<580", "580-619", "620-659", "660-699", "700-739", "740+"]
+  income_band:
+    edges: [0, 35000, 50000, 75000, 100000, 150000, 1000000000]
+    labels: ["<$35K", "$35K-49K", "$50K-74K", "$75K-99K", "$100K-149K", "$150K+"]
+  dti_band:
+    edges: [0.0, 0.10, 0.20, 0.30, 0.40, 1.01]
+    labels: ["<10%", "10-19%", "20-29%", "30-39%", "40%+"]
+  utilization_band:
+    edges: [0.0, 0.30, 0.50, 0.70, 0.90, 1.01]
+    labels: ["<30%", "30-49%", "50-69%", "70-89%", "90%+"]
+  delinquency_band:
+    edges: [0, 1, 2, 1000]
+    labels: ["None", "1", "2+"]
+  loan_size_band:
+    edges: [0, 5000, 10000, 20000, 30000, 1000000]
+    labels: ["<$5K", "$5K-9.9K", "$10K-19.9K", "$20K-29.9K", "$30K+"]

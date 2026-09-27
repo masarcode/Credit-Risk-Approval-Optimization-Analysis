@@ -1,0 +1,39 @@
+stage,check,passed,detail
+raw,raw row count = applicants + injected duplicates,True,"100,250 rows"
+raw,raw file contains the expected missing values,True,"2,307 missing cells"
+clean,"exactly 100,000 records",True,"100,000 rows"
+clean,applicant_id is unique,True,"100,000 unique ids"
+clean,no missing values in any column,True,0 missing cells
+clean,"credit_score within [300, 850]",True,"min 384, max 850"
+clean,"debt_to_income_ratio within [0.0, 0.6]",True,"min 0.0167, max 0.5572"
+clean,"revolving_utilization within [0.0, 1.0]",True,"min 0.003, max 0.986"
+clean,"annual_income within [12000, 500000]",True,"min 1.2e+04, max 5e+05"
+clean,"requested_loan_amount within [1000, 50000]",True,"min 1,500, max 5e+04"
+clean,count and amount fields are non-negative,True,"existing_debt, employment_length, credit_history_length, number_of_open_accounts, recent_delinquencies, recent_credit_inquiries"
+clean,observed_default is binary 0/1,True,"values [0, 1]"
+clean,previous_default_flag is binary 0/1,True,"values [0, 1]"
+clean,overall default rate is plausible (2% to 30%),True,13.26%
+clean,default rises as credit score falls,True,corr -0.389
+clean,default rises with debt_to_income_ratio,True,corr 0.264
+clean,default rises with revolving_utilization,True,corr 0.331
+clean,default rises with recent_delinquencies,True,corr 0.264
+score,every applicant has a score and PD,True,
+score,predicted PD strictly between 0 and 1,True,
+score,higher score always means lower predicted PD,True,
+score,holdout AUC above 0.70 (useful rank-ordering),True,AUC 0.844
+score,no material overfitting (dev AUC - holdout AUC < 0.02),True,dev 0.844 vs holdout 0.844
+score,holdout calibration: predicted vs observed default rate within 1 point,True,predicted 13.29% vs observed 13.19%
+scenarios,12 scenarios produced,True,12 rows
+scenarios,first scenario is the baseline threshold,True,
+scenarios,approval rate falls as the threshold tightens,True,
+scenarios,approved defaults never increase as the threshold tightens,True,
+scenarios,baseline changes are exactly zero,True,
+scenarios,every scenario reconciles to the applicant-level data,True,
+sql,SQL scenario results match Python scenario results,True,12 thresholds compared
+sql,SQL Card utilization segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL Credit score segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL Debt-to-income segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL Income segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL Loan size segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL Recent delinquencies segments sum to all applicants and defaults,True,"100,000 applicants, 13,260 defaults"
+sql,SQL segment counts match independent Python (pandas) segmentation,True,30 segment rows compared

@@ -1,0 +1,15 @@
+# Exact versions used for the verified portfolio build (Python 3.12).
+numpy==2.4.4
+pandas==3.0.2
+statsmodels==0.15.0
+scipy==1.17.1
+matplotlib==3.10.9
+openpyxl==3.1.5
+reportlab==4.4.10
+PyYAML==6.0.3
+pytest==9.1.1
+
+# Optional: only needed to re-execute the exploratory notebook
+nbformat==5.11.1
+nbclient==0.11.0
+ipykernel==7.3.0

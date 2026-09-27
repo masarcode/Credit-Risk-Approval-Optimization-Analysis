@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Large generated data (recreate with: python scripts/run_pipeline.py)
+data/raw/*
+data/processed/*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Office lock files
+~$*
+.~lock.*
+
+# Local credentials, logs and temporary exports
+.env
+.env.*
+*.pem
+*.key
+*.log
+tmp/
+dist/

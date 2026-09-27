@@ -1,0 +1,12 @@
+feature,coefficient,p_value,expected_sign,retained,reason
+credit_score,-0.012087890128528605,0.0,-1,True,kept
+debt_to_income_ratio,2.39836950864404,1.3302969662689547e-53,1,True,kept
+revolving_utilization,1.1097508810943573,5.2220665795462276e-52,1,True,kept
+recent_delinquencies,0.30723092228939847,6.950774941373719e-57,1,True,kept
+previous_default_flag,0.6491365570303888,1.7458974644858834e-57,1,True,kept
+recent_credit_inquiries,0.10155048895431974,1.0904505713112867e-22,1,True,kept
+loan_to_income_ratio,1.8698901853138692,2.4053847811334923e-132,1,True,kept
+log_annual_income,-0.3643932593571035,1.1102434725237e-30,-1,True,kept
+employment_length_capped,-0.030716520619522913,6.039303295192689e-10,-1,True,kept
+credit_history_length,0.0024148861534412907,0.47357313314974125,-1,False,wrong direction
+number_of_open_accounts,-0.00427317441965388,0.3938260638478348,-1,False,not statistically clear
